@@ -1,22 +1,25 @@
-// src/app/api/get-leaderboard/route.ts
+// app/api/leaderboard/route.ts
 
-import { NextApiRequest, NextApiResponse } from 'next';
+
 import { PrismaClient } from '@prisma/client';
+import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function GET() {
   try {
-    if (req.method === 'GET') {
-      const users = await prisma.user.findMany({
-        orderBy: { score: 'desc' },
-      });
-      return res.status(200).json({ success: true, data: users });
-    } else {
-      return res.status(405).json({ success: false, message: 'Method not allowed' });
-    }
+    // Fetch users ordered by score in descending order
+    const leaderboard = await prisma.user.findMany({
+      orderBy: { score: 'desc' },
+      take: 10, // Optional: limit to top 10 users
+    });
+
+    return NextResponse.json(leaderboard, { status: 200 });
   } catch (error) {
-    console.error('Error in /api/get-leaderboard:', error);
-    return res.status(500).json({ success: false, message: 'Internal server error' });
+    console.error('Error fetching leaderboard:', error);
+    return NextResponse.json({ error: 'Failed to fetch leaderboard' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
+
