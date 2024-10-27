@@ -1,88 +1,57 @@
-// src/app/page.tsx
+import Link from 'next/link';
 
-"use client";
-
-import { useEffect, useState } from 'react';
-
-interface LeaderboardEntry {
-  id: number;
-  name: string;
-  score: number;
-}
-
-const Leaderboard = () => {
-  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
-  const [name, setName] = useState('');
-  const [score, setScore] = useState<number | ''>('');
-
-  useEffect(() => {
-    // Fetch leaderboard data
-    const fetchLeaderboard = async () => {
-      const response = await fetch('/api/leaderboard');
-      const data = await response.json();
-      setEntries(data);
-    };
-
-    fetchLeaderboard();
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (name && typeof score === 'number') {
-      // Send data to API
-      const response = await fetch('/api/submit-score', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, score }),
-      });
-
-      if (response.ok) {
-        const newEntry = await response.json();
-        setEntries((prevEntries) => [...prevEntries, newEntry.data]);
-        setName(''); // Clear the input fields
-        setScore('');
-      } else {
-        console.error('Failed to submit score');
-      }
-    }
-  };
-
+export default function Home() {
   return (
-    <div>
-      <h1>Leaderboard</h1>
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
 
-      {/* Form to Submit Score */}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          type="number"
-          placeholder="Score"
-          value={score}
-          onChange={(e) => setScore(e.target.value ? parseInt(e.target.value) : '')}
-          required
-        />
-        <button type="submit">Submit Score</button>
-      </form>
+      {/* Navbar */}
+      <nav>
+        <ul>
+          <li><Link href="/">Home</Link></li>
+          <li><Link href="/AboutUs">About Us</Link></li>
+          <li><Link href="/Calculator">Calculator</Link></li>
+          <li><Link href="/leaderboard">Leaderboard</Link></li> {/* Updated path here */}
+          <li>
+            <Link href="#">Registration</Link>
+            <ul className="dropdown">
+              <li><Link href="/Register">Register</Link></li>
+              <li><Link href="/Login">Login</Link></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
 
-      {/* Display Leaderboard */}
-      <ul>
-        {entries
-          .sort((a, b) => b.score - a.score)
-          .map((entry) => (
-            <li key={entry.id}>
-              {entry.name}: {entry.score}
-            </li>
-          ))}
-      </ul>
+      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+        
+        {/* Hero Section */}
+        <div className="hero text-center bg-green-100 p-10 rounded-lg shadow-md">
+          <h1 className="text-3xl font-bold mb-4">Carbon Emission Tracker</h1>
+          <p className="mb-6">
+            Welcome to the Carbon Emission Tracker! Join us in tracking and reducing your carbon footprint.
+          </p>
+        </div>
+
+        {/* Hero Buttons in the Body */}
+        <div className="button-group flex gap-4 justify-center mt-4">
+          <Link href="/Calculator">
+            <button className="button1 bg-blue-500 text-white px-6 py-2 rounded">Calculator</button>
+          </Link>
+          <Link href="/leaderboard">
+            <button className="button2 bg-green-500 text-white px-6 py-2 rounded">Leaderboard</button> {/* Updated path here */}
+          </Link>
+        </div>
+
+        {/* Big Display of Company */}
+        <div className="company">
+          <h1 className="company">Learn how to track your Carbon Emissions  
+            today by using our Carbon Emission Calculator.</h1>
+        </div>
+
+        {/* Footer */}
+        <footer>
+          <p className="footer">&copy; {new Date().getFullYear()} Carbon Emission Tracker. All rights reserved.</p>
+        </footer> 
+      </main>
     </div>
   );
-};
-
-export default Leaderboard;
+}
