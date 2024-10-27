@@ -1,7 +1,6 @@
 // src/app/api/get-transit-route/route.ts
 
 import { NextResponse } from 'next/server';
-import { TransitStep } from '../../../types/transit';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -15,9 +14,9 @@ export async function GET(request: Request) {
 
   try {
     const response = await fetch(
-      `https://maps.googleapis.com/maps/api/directions/json?origin=${encodeURIComponent(
+      `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(
         origin
-      )}&destination=${encodeURIComponent(destination)}&mode=transit&key=${apiKey}`
+      )}&destinations=${encodeURIComponent(destination)}&mode=transit&key=${apiKey}`
     );
 
     if (!response.ok) {
@@ -25,38 +24,25 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
+    console.log('API Response Data:', data);
 
-    if (!data.routes || data.routes.length === 0) {
+    if (!data.rows || !data.rows[0] || !data.rows[0].elements || data.rows[0].elements[0].status !== 'OK') {
       return NextResponse.json({
-        error: 'No transit routes available for the specified origin and destination.'
+        error: 'No valid routes available for the specified origin and destination.'
       }, { status: 404 });
     }
 
-    const route = data.routes[0];
-    const legs = route.legs[0];
-    const steps = legs.steps.map((step: TransitStep) => ({
-      travelMode: step.travel_mode,
-      instructions: step.html_instructions,
-      distance: step.distance.text,
-      duration: step.duration.text,
-      transitDetails: step.transit_details
-        ? {
-            line: step.transit_details.line.short_name,
-            vehicleType: step.transit_details.line.vehicle.type,
-            departureStop: step.transit_details.departure_stop.name,
-            arrivalStop: step.transit_details.arrival_stop.name,
-          }
-        : null,
-    }));
+    const element = data.rows[0].elements[0];
+    const distance = element.distance.text;
+    const duration = element.duration.text;
 
     return NextResponse.json({
       origin,
       destination,
-      duration: legs.duration.text,
-      steps,
+      distance,
+      duration,
     });
   } catch (error) {
-    // Cast `error` to `Error` to safely access `message`
     console.error('Error fetching transit route:', (error as Error).message);
     return NextResponse.json(
       { error: 'Failed to fetch transit route', details: (error as Error).message },

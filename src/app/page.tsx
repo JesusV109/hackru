@@ -33,8 +33,8 @@ export default function Home() {
 
         {/* Hero Buttons in the Body */}
         <div className="button-group flex gap-4 justify-center mt-4">
-          <Link href="/Calculator">
-            <button className="button1 bg-blue-500 text-white px-6 py-2 rounded">Calculator</button>
+          <Link href="/distance">
+            <button className="button1 bg-blue-500 text-white px-6 py-2 rounded">Distance</button>
           </Link>
           <Link href="/leaderboard">
             <button className="button2 bg-green-500 text-white px-6 py-2 rounded">Leaderboard</button> {/* Updated path here */}
