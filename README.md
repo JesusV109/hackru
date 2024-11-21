@@ -1,3 +1,17 @@
+A Next.js project initialized with create-next-app. It includes configurations for ESLint and Tailwind CSS, indicating a focus on maintaining code quality and utilizing utility-first CSS for styling. The project also integrates the Google Maps API to provide transit route information, as evidenced by a recent commit titled "Add Google Maps API integration for transit routes."
+
+The repository's structure comprises several key directories and files:
+
+prisma/: Likely contains Prisma configurations for database management.
+public/: Hosts static assets accessible to the application.
+src/: Contains the main source code, including pages and components.
+.eslintrc.json: Configuration file for ESLint to enforce coding standards.
+tailwind.config.ts: Configuration file for Tailwind CSS customization.
+The README.md provides basic instructions for setting up and running the development server, suggesting the use of npm, yarn, pnpm, or bun as package managers. However, it lacks detailed information about the project's purpose or specific features.
+
+In summary, this repository appears to be a web application project built with Next.js, incorporating Tailwind CSS for styling and Prisma for database management, with added functionality for displaying transit routes via the Google Maps API.
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
